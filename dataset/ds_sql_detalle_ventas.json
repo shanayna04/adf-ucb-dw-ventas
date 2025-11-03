@@ -1,0 +1,52 @@
+{
+	"name": "ds_sql_detalle_ventas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_dw_ventas",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Bronze"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SLS_ORD_NUM",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_PRD_KEY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_CUST_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_ORDER_DT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_SHIP_DT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_SALES",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_QUANTITY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_PRICE",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "BRONZE",
+			"table": "DETALLE_VENTA"
+		}
+	}
+}
