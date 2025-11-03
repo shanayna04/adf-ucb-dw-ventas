@@ -1,0 +1,44 @@
+{
+	"name": "ds_gold_sql_dim_productos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_dw_ventas",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Gold"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PRD_KEY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PRD_NM",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PRD_COST",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PRD_LINE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CAT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MAINTENANCE",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "GOLD",
+			"table": "DIM_PRODUCTOS"
+		}
+	}
+}
