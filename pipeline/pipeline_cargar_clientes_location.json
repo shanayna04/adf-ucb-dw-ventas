@@ -1,0 +1,9 @@
+{
+	"name": "pipeline_cargar_clientes_location",
+	"properties": {
+		"folder": {
+			"name": "Bronze"
+		},
+		"annotations": []
+	}
+}
