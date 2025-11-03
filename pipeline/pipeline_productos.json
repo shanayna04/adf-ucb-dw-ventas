@@ -1,5 +1,5 @@
 {
-	"name": "pipeline_clientes",
+	"name": "pipeline_productos",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "df_silver_clientes",
+						"referenceName": "df_silver_productos",
 						"type": "DataFlowReference"
 					},
 					"compute": {
