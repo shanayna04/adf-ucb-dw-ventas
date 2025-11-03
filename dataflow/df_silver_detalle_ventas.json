@@ -8,14 +8,78 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "ds_sql_detalle_ventas",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_sql_detalle_ventas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cast1"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          SLS_ORD_NUM as string,",
+				"          SLS_PRD_KEY as string,",
+				"          SLS_CUST_ID as string,",
+				"          SLS_ORDER_DT as string,",
+				"          SLS_SHIP_DT as string,",
+				"          SLS_SALES as string,",
+				"          SLS_QUANTITY as string,",
+				"          SLS_PRICE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 cast(output(",
+				"          SLS_SALES as integer,",
+				"          SLS_QUANTITY as integer,",
+				"          SLS_PRICE as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          SLS_ORD_NUM as string,",
+				"          SLS_PRD_KEY as string,",
+				"          SLS_CUST_ID as string,",
+				"          SLS_ORDER_DT as string,",
+				"          SLS_SHIP_DT as string,",
+				"          SLS_SALES as integer,",
+				"          SLS_QUANTITY as integer,",
+				"          SLS_PRICE as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SLS_ORD_NUM,",
+				"          SLS_PRD_KEY,",
+				"          SLS_CUST_ID,",
+				"          SLS_ORDER_DT,",
+				"          SLS_SHIP_DT,",
+				"          SLS_SALES,",
+				"          SLS_QUANTITY,",
+				"          SLS_PRICE",
+				"     )) ~> sink1"
 			]
 		}
 	}
