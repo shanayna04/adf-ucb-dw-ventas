@@ -1,0 +1,55 @@
+{
+	"name": "ds_silver_sql_detalle_ventas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_dw_ventas",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Silver"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SLS_ORD_NUM",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_PRD_KEY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_CUST_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_ORDER_DT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_SHIP_DT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SLS_SALES",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SLS_QUANTITY",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SLS_PRICE",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "SILVER",
+			"table": "DETALLE_VENTA"
+		}
+	}
+}
