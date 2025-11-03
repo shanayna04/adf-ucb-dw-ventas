@@ -29,7 +29,15 @@
 					"name": "source3"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_sql_clientes",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
@@ -38,7 +46,22 @@
 					"name": "derivedColumn2"
 				},
 				{
-					"name": "union1"
+					"name": "cast1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "cast2"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -73,7 +96,71 @@
 				"     format: 'table') ~> source3",
 				"source2 derive(CID = toInteger(substring(CID, 7))) ~> derivedColumn1",
 				"source3 derive(CID = toInteger(substring(CID, 9))) ~> derivedColumn2",
-				"source1, derivedColumn1, derivedColumn2 union(byName: false)~> union1"
+				"source1 cast(output(",
+				"          CST_ID as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1, derivedColumn1 join(CST_ID == CID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1, derivedColumn2 join(CST_ID == derivedColumn2@CID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 derive(CST_FIRSTNAME = trim(CST_FIRSTNAME),",
+				"          CST_LASTNAME = trim(CST_LASTNAME)) ~> derivedColumn3",
+				"derivedColumn3 cast(output(",
+				"          BDATE as date 'yyyy-MM-dd'",
+				"     ),",
+				"     errors: true) ~> cast2",
+				"cast2 select(mapColumn(",
+				"          CST_ID,",
+				"          CST_KEY,",
+				"          CST_FIRSTNAME,",
+				"          CST_LASTNAME,",
+				"          CST_MARITAL_STATUS,",
+				"          CST_GNRD,",
+				"          CNTRY,",
+				"          BDATE,",
+				"          GEN",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CST_ID as integer,",
+				"          CST_KEY as string,",
+				"          CST_FIRSTNAME as string,",
+				"          CST_LASTNAME as string,",
+				"          CST_MARITAL_STATUS as string,",
+				"          CST_GNRD as string,",
+				"          CNTRY as string,",
+				"          BDATE as date,",
+				"          GEN as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CST_ID,",
+				"          CST_KEY,",
+				"          CST_FIRSTNAME,",
+				"          CST_LASTNAME,",
+				"          CST_MARITAL_STATUS,",
+				"          CST_GNRD,",
+				"          CNTRY,",
+				"          BDATE,",
+				"          GEN",
+				"     )) ~> sink1"
 			]
 		}
 	}
