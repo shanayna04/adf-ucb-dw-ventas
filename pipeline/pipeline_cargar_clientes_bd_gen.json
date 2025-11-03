@@ -1,5 +1,5 @@
 {
-	"name": "pipeline_cargar_clientes_location",
+	"name": "pipeline_cargar_clientes_bd_gen",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "df_bronze_clientes_location",
+						"referenceName": "df_bronze_clientes_bd_gen",
 						"type": "DataFlowReference"
 					},
 					"compute": {
