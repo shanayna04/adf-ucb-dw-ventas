@@ -1,5 +1,5 @@
 {
-	"name": "db_bronze_clientes",
+	"name": "ds_sql_clientes",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_sql_dw_ventas",

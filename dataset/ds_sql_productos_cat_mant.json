@@ -1,5 +1,5 @@
 {
-	"name": "ds_sql_clientes_location",
+	"name": "ds_sql_productos_cat_mant",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_sql_dw_ventas",
@@ -12,17 +12,21 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "CID",
+				"name": "ID",
 				"type": "nvarchar"
 			},
 			{
-				"name": "CNTRY",
+				"name": "CAT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MAINTENANCE",
 				"type": "nvarchar"
 			}
 		],
 		"typeProperties": {
 			"schema": "BRONZE",
-			"table": "CLIENTES_LOCATION"
+			"table": "PRODUCTOS_CAT_MANT"
 		}
 	}
 }
