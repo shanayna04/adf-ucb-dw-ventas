@@ -33,57 +33,27 @@
 			],
 			"transformations": [
 				{
-					"name": "select1"
-				},
-				{
-					"name": "select2"
-				},
-				{
 					"name": "union1"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          SLS_ORD_NUM as string,",
-				"          SLS_PRD_KEY as string,",
-				"          SLS_CUST_ID as string,",
-				"          SLS_ORDER_DT as string,",
-				"          SLS_SHIP_DT as string,",
-				"          SLS_SALES as integer,",
-				"          SLS_QUANTITY as integer,",
-				"          SLS_PRICE as integer",
+				"          SLS_ORDER_DT as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'select distinct SLS_ORD_NUM, SLS_PRD_KEY, SLS_CUST_ID, SLS_ORDER_DT, SLS_SHIP_DT, SLS_SALES, SLS_QUANTITY, SLS_PRICE from SILVER.DETALLE_VENTA',",
+				"     query: 'select distinct SLS_ORDER_DT  from SILVER.DETALLE_VENTA',",
 				"     format: 'query') ~> source1",
 				"source(output(",
-				"          SLS_ORD_NUM as string,",
-				"          SLS_PRD_KEY as string,",
-				"          SLS_CUST_ID as string,",
-				"          SLS_ORDER_DT as string,",
-				"          SLS_SHIP_DT as string,",
-				"          SLS_SALES as integer,",
-				"          SLS_QUANTITY as integer,",
-				"          SLS_PRICE as integer",
+				"          SLS_SHIP_DT as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'select distinct SLS_ORD_NUM, SLS_PRD_KEY, SLS_CUST_ID, SLS_ORDER_DT, SLS_SHIP_DT, SLS_SALES, SLS_QUANTITY, SLS_PRICE from SILVER.DETALLE_VENTA',",
+				"     query: 'select distinct SLS_SHIP_DT from SILVER.DETALLE_VENTA',",
 				"     format: 'query') ~> source2",
-				"source1 select(mapColumn(",
-				"          FECHA = SLS_ORDER_DT",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"source2 select(mapColumn(",
-				"          FECHA = SLS_SHIP_DT",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select1, select2 union(byName: true)~> union1",
+				"source1, source2 union(byName: false)~> union1",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -99,7 +69,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          FECHA",
+				"          FECHA = SLS_ORDER_DT",
 				"     )) ~> sink1"
 			]
 		}
