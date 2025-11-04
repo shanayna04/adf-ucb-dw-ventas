@@ -1,0 +1,77 @@
+{
+	"name": "df_gold_dim_clientes",
+	"properties": {
+		"folder": {
+			"name": "Gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_sql_clientes",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_gold_sql_dim_clientes",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          CST_ID as integer,",
+				"          CST_KEY as string,",
+				"          CST_FIRSTNAME as string,",
+				"          CST_LASTNAME as string,",
+				"          CST_MARITAL_STATUS as string,",
+				"          CST_GNRD as string,",
+				"          CNTRY as string,",
+				"          BDATE as date,",
+				"          GEN as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CST_ID as string,",
+				"          CST_FIRSTNAME as string,",
+				"          CST_LASTNAME as string,",
+				"          CST_MARITAL_STATUS as string,",
+				"          CST_GNRD as string,",
+				"          CNTRY as string,",
+				"          BDATE as date,",
+				"          GEN as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CST_ID,",
+				"          CST_FIRSTNAME,",
+				"          CST_LASTNAME,",
+				"          CST_MARITAL_STATUS,",
+				"          CST_GNRD,",
+				"          CNTRY,",
+				"          BDATE,",
+				"          GEN",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
