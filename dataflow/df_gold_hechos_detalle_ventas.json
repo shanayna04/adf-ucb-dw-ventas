@@ -63,6 +63,9 @@
 					"name": "lookup4"
 				},
 				{
+					"name": "lookup5"
+				},
+				{
 					"name": "select1"
 				}
 			],
@@ -128,15 +131,19 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookup4",
-				"lookup4 select(mapColumn(",
+				"lookup4, dimFecha2 lookup(SLS_SHIP_DT == dimFecha2@FECHA,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup5",
+				"lookup5 select(mapColumn(",
 				"          SLS_ORD_NUM,",
 				"          SLS_PRD_KEY,",
 				"          SLS_CUST_ID,",
-				"          SLS_ORDER_DT,",
-				"          SLS_SHIP_DT,",
 				"          SLS_SALES,",
 				"          SLS_QUANTITY,",
-				"          SLS_PRICE",
+				"          SLS_PRICE,",
+				"          ID_ORDER_DT = dimFecha@ID_FECHA,",
+				"          ID_SHIP_DT = dimFecha2@ID_FECHA",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
@@ -165,8 +172,8 @@
 				"          SLS_ORD_NUM,",
 				"          SLS_PRD_KEY,",
 				"          SLS_CUST_ID,",
-				"          ID_ORDER_DT = SLS_ORDER_DT,",
-				"          ID_SHIP_DT = SLS_SHIP_DT,",
+				"          ID_ORDER_DT,",
+				"          ID_SHIP_DT,",
 				"          SLS_SALES,",
 				"          SLS_QUANTITY,",
 				"          SLS_PRICE",
