@@ -40,12 +40,6 @@
 				},
 				{
 					"name": "union1"
-				},
-				{
-					"name": "aggregate1"
-				},
-				{
-					"name": "select3"
 				}
 			],
 			"scriptLines": [
@@ -90,14 +84,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
 				"select1, select2 union(byName: true)~> union1",
-				"union1 aggregate(groupBy(FECHA),",
-				"     count = count()) ~> aggregate1",
-				"aggregate1 select(mapColumn(",
-				"          FECHA",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select3",
-				"select3 sink(allowSchemaDrift: true,",
+				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          ID_FECHA as integer,",
