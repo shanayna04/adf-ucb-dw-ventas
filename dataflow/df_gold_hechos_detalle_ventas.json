@@ -60,9 +60,6 @@
 					"name": "lookup2"
 				},
 				{
-					"name": "lookup3"
-				},
-				{
 					"name": "lookup4"
 				},
 				{
@@ -127,11 +124,7 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookup2",
-				"lookup2, dimFecha2 lookup(SLS_SHIP_DT == dimFecha2@FECHA,",
-				"     multiple: false,",
-				"     pickup: 'any',",
-				"     broadcast: 'auto')~> lookup3",
-				"lookup3, dimClientes lookup(SLS_CUST_ID == CST_ID,",
+				"lookup2, dimClientes lookup(SLS_CUST_ID == CST_ID,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookup4",
