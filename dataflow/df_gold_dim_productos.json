@@ -58,7 +58,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          PRD_KEY,",
+				"          PRD_KEY = PRD_ID,",
 				"          PRD_NM,",
 				"          PRD_COST,",
 				"          PRD_LINE,",

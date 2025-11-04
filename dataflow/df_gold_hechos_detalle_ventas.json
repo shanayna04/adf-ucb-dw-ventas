@@ -16,16 +16,57 @@
 				},
 				{
 					"dataset": {
+						"referenceName": "ds_gold_sql_dim_productos",
+						"type": "DatasetReference"
+					},
+					"name": "dimProductos"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_gold_sql_dim_fecha",
+						"type": "DatasetReference"
+					},
+					"name": "dimFecha"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_gold_sql_dim_fecha",
+						"type": "DatasetReference"
+					},
+					"name": "dimFecha2"
+				},
+				{
+					"dataset": {
 						"referenceName": "ds_gold_sql_dim_clientes",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "dimClientes"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_gold_sql_hechos_detalle_ventas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "lookup1"
+				},
+				{
+					"name": "lookup2"
+				},
+				{
+					"name": "lookup3"
+				},
+				{
+					"name": "lookup4"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -44,23 +85,99 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
 				"source(output(",
-				"          CST_ID as string,",
-				"          CST_FIRSTNAME as string,",
-				"          CST_LASTNAME as string,",
-				"          CST_MARITAL_STATUS as string,",
-				"          CST_GNRD as string,",
-				"          CNTRY as string,",
-				"          BDATE as date,",
-				"          GEN as string",
+				"          PRD_KEY as string,",
+				"          PRD_NM as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source2",
-				"source1 lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     query: 'select PRD_KEY, PRD_NM from GOLD.DIM_PRODUCTOS',",
+				"     format: 'query') ~> dimProductos",
+				"source(output(",
+				"          ID_FECHA as integer,",
+				"          FECHA as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select ID_FECHA, FECHA from GOLD.DIM_FECHA',",
+				"     format: 'query') ~> dimFecha",
+				"source(output(",
+				"          ID_FECHA as integer,",
+				"          FECHA as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select ID_FECHA, FECHA from GOLD.DIM_FECHA',",
+				"     format: 'query') ~> dimFecha2",
+				"source(output(",
+				"          CST_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select CST_ID from GOLD.DIM_CLIENTES',",
+				"     format: 'query') ~> dimClientes",
+				"source1, dimProductos lookup(SLS_PRD_KEY == PRD_KEY,",
 				"     multiple: false,",
 				"     pickup: 'any',",
-				"     broadcast: 'auto')~> lookup1"
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1, dimFecha lookup(SLS_ORDER_DT == FECHA,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup2",
+				"lookup2, dimFecha2 lookup(SLS_SHIP_DT == dimFecha2@FECHA,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup3",
+				"lookup3, dimClientes lookup(SLS_CUST_ID == CST_ID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup4",
+				"lookup4 select(mapColumn(",
+				"          SLS_ORD_NUM,",
+				"          SLS_PRD_KEY,",
+				"          SLS_CUST_ID,",
+				"          SLS_ORDER_DT,",
+				"          SLS_SHIP_DT,",
+				"          SLS_SALES,",
+				"          SLS_QUANTITY,",
+				"          SLS_PRICE",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ID_HECHOS as integer,",
+				"          SLS_ORD_NUM as string,",
+				"          SLS_PRD_KEY as string,",
+				"          SLS_CUST_ID as string,",
+				"          ID_ORDER_DT as integer,",
+				"          ID_SHIP_DT as integer,",
+				"          SLS_SALES as integer,",
+				"          SLS_QUANTITY as integer,",
+				"          SLS_PRICE as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SLS_ORD_NUM,",
+				"          SLS_PRD_KEY,",
+				"          SLS_CUST_ID,",
+				"          ID_ORDER_DT = SLS_ORDER_DT,",
+				"          ID_SHIP_DT = SLS_SHIP_DT,",
+				"          SLS_SALES,",
+				"          SLS_QUANTITY,",
+				"          SLS_PRICE",
+				"     )) ~> sink1"
 			]
 		}
 	}
